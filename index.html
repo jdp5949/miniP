@@ -97,9 +97,10 @@
             var downPaymentPercentage = document.getElementById('downPaymentPercentageInput').value;
 
             // Construct the URL for the API request to your Node.js server
-            var apiUrl15 = `/?url=https://www.mlcalc.com/mortgage-calculator/${homeValue}-${downPaymentPercentage}-15-4.5-3000-1500-0-0.52-2023-10-year.htm`;
-            var apiUrl30 = `/?url=https://www.mlcalc.com/mortgage-calculator/${homeValue}-${downPaymentPercentage}-30-4.5-3000-1500-0-0.52-2023-10-year.htm`;
-
+     
+            var apiUrl15 = `https://www.mlcalc.com/mortgage-calculator/${homeValue}-${downPaymentPercentage}-15-4.5-3000-1500-0-0.52-2023-10-year.htm`;
+            var apiUrl30 = `https://www.mlcalc.com/mortgage-calculator/${homeValue}-${downPaymentPercentage}-30-4.5-3000-1500-0-0.52-2023-10-year.htm`;
+            
             // Make AJAX requests to your Node.js server for 15-year and 30-year mortgages
             var xhr15 = new XMLHttpRequest();
             xhr15.open("GET", apiUrl15, true);
