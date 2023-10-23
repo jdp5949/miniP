@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mortgage Calculator</title>
+    <style>
+        /* Your provided CSS styles */
+        * {
+            overflow-anchor: none;
+        }
+
+        body, td, th, div, p {
+            font-family: helvetica neue, Helvetica, Tahoma, sans-serif;
+            font-size: 14px;
+            color: #333;
+        }
+
+        textarea, input, select, option, button {
+            font-family: helvetica neue, Helvetica, Tahoma, sans-serif;
+            font-size: 14px;
+            color: #333;
+            border: 1px solid #d5d5d5;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        /* Add more styles here */
+
+        /* CSS for tables */
+        .mortgage-table, #mortgageResult30, #mortgageResult15 {
+            border-collapse: collapse;
+            margin: 10px;
+            float: left;
+            border: 1px solid #d5d5d5;
+            margin-right: 10px;
+        }
+
+        .mortgage-table td, .mortgage-table th, .mortgageResult30 td, .mortgageResult30 th, .mortgageResult15 td, .mortgageResult15 th {
+            border: 1px solid #d5d5d5;
+            padding: 8px;
+        }
+
+        .mortgage-table th {
+            background-color: #f2f2f2;
+        }
+        #morgage{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="morgage" > 
+    <h1>Mortgage Calculator</h1>
+
+    <label for="homeValueInput">Home Value</label>
+    <input type="text" id="homeValueInput" placeholder="Home Value"><br><br>
+
+    <label for="downPaymentPercentageInput">Down Payment Percentage</label>
+    <input type="text" id="downPaymentPercentageInput" placeholder="Down Payment Percentage"><br><br>
+
+    
+    <label for="downPaymentAmount">Down Payment Amount</label>
+    <input type="text" id="downPaymentAmount" placeholder="Down Payment Amount" ><br><br>
+    
+    <label for="loanAmountInput">Loan Amount</label>
+    <input type="text" id="loanAmountInput" placeholder="Loan Amount" ><br><br>
+    
+    <button onclick="calculateMortgage()">Calculate Mortgage</button>
+    
+    </div>
+    <div id="mortgageResult15" class="mortgage-table" background-color: #f2f2f2;></div>
+    <div id="mortgageResult30" class="mortgage-table" background-color: #f2f2f2;></div>
+
+    <script>
+        // Function to calculate down payment and loan amount
+        function calculateDownPaymentAndLoanAmount() {
+            var homeValue = parseFloat(document.getElementById('homeValueInput').value);
+            var downPaymentPercentage = parseFloat(document.getElementById('downPaymentPercentageInput').value);
+
+            if (!isNaN(homeValue) && !isNaN(downPaymentPercentage)) {
+                var downPaymentAmount = (downPaymentPercentage / 100) * homeValue;
+                var loanAmount = homeValue - downPaymentAmount;
+                document.getElementById('downPaymentAmount').value = downPaymentAmount;
+                document.getElementById('loanAmountInput').value = loanAmount;
+            } else {
+                // Handle invalid input
+                document.getElementById('downPaymentAmount').value = '';
+                document.getElementById('loanAmountInput').value = '';
+            }
+        }
+
+        // Add event listeners for input changes
+        document.getElementById('homeValueInput').addEventListener('input', calculateDownPaymentAndLoanAmount);
+        document.getElementById('downPaymentPercentageInput').addEventListener('input', calculateDownPaymentAndLoanAmount);
+
+        function calculateMortgage() {
+            var homeValue = document.getElementById('homeValueInput').value;
+            var downPaymentPercentage = document.getElementById('downPaymentPercentageInput').value;
+
+            // Construct the URL for the API request to your Node.js server
+            var apiUrl15 = `/?url=https://www.mlcalc.com/mortgage-calculator/${homeValue}-${downPaymentPercentage}-15-4.5-3000-1500-0-0.52-2023-10-year.htm`;
+            var apiUrl30 = `/?url=https://www.mlcalc.com/mortgage-calculator/${homeValue}-${downPaymentPercentage}-30-4.5-3000-1500-0-0.52-2023-10-year.htm`;
+
+            // Make AJAX requests to your Node.js server for 15-year and 30-year mortgages
+            var xhr15 = new XMLHttpRequest();
+            xhr15.open("GET", apiUrl15, true);
+            xhr15.onreadystatechange = function () {
+                if (xhr15.readyState === 4 && xhr15.status === 200) {
+                    var response = xhr15.responseText;
+
+                    // Extract the table with the schedule id from the response
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(response, "text/html");
+                    var table = doc.querySelector('#schedule');
+
+                    if (table) {
+                        document.getElementById('mortgageResult15').innerHTML = table.outerHTML;
+                    } else {
+                        document.getElementById('mortgageResult15').innerHTML = 'Table not found.';
+                    }
+                }
+            };
+            xhr15.send();
+
+            var xhr30 = new XMLHttpRequest();
+            xhr30.open("GET", apiUrl30, true);
+            xhr30.onreadystatechange = function () {
+                if (xhr30.readyState === 4 && xhr30.status === 200) {
+                    var response = xhr30.responseText;
+
+                    // Extract the table with the schedule id from the response
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(response, "text/html");
+                    var table = doc.querySelector('#schedule');
+
+                    if (table) {
+                        document.getElementById('mortgageResult30').innerHTML = table.outerHTML;
+                    } else {
+                        document.getElementById('mortgageResult30').innerHTML = 'Table not found.';
+                    }
+                }
+            };
+            xhr30.send();
+        }
+    </script>
+</body>
+</html>
